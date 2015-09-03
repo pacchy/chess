@@ -1,7 +1,7 @@
-var moves = ()(function(){
+var moves = (function(){
 	var straightAhead = function(piece, validMoves){
-        var row = piece.currentPosition.charAt(1);
-        var file = piece.currentPosition.charAt(0);
+        var row = piece.position.row;
+        var file = piece.position.file;
         var possibleMoves = null;
         if (validMoves != undefined || validMoves != null){
             possibleMoves = validMoves;
@@ -9,9 +9,10 @@ var moves = ()(function(){
             possibleMoves=[];
         }
         
-        for(var i =row; i<9; i++){
+        for(var i = parseInt(row)+1; i<9; i++){
               var pos = file+i.toString();
             var res = board.canIMoveHere(piece, pos);
+			
             if(res.canMove){
               if(possibleMoves.indexOf(pos)<0){
                 possibleMoves.push(pos);
@@ -19,7 +20,9 @@ var moves = ()(function(){
                     return possibleMoves;
                   }
               }
-            }
+            }else if(res.sameColourPiece==true){
+				return possibleMoves;
+			}
         }
         return possibleMoves;
     };
@@ -27,7 +30,7 @@ var moves = ()(function(){
 	var cross = function(currentPosition, validMoves){
 		var row = currentPosition.charAt(1);
 		var file = currentPosition.charAt(0);
-		var possibleMoves = validMoves? validMoves | [];
+		//var possibleMoves = validMoves? validMoves | [];
 		for(var i=1;i<9;i++){
 			if (i!=row){
 			possibleMoves.push(file+i.toString());
@@ -36,4 +39,8 @@ var moves = ()(function(){
 		return possibleMoves;
 	};
 	
-});
+	return{
+        straightAhead: straightAhead
+        };
+	
+})();

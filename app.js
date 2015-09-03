@@ -14,7 +14,7 @@ var app = angular.module('chessApp', []);
 			newRow.squares.push(newSquare);
 		}
 	}
-	
+
 	setupBoard.loadPieces(gameConfig.newGame, board);
 	
 
@@ -26,6 +26,7 @@ function drag(ev) {
     ev.dataTransfer.setData("text", ev.target.id);
 }
 
+var validMoves = null;
 function drop(ev) {
     ev.preventDefault();
     var src = document.getElementById (ev.dataTransfer.getData("text"));
@@ -35,12 +36,21 @@ function drop(ev) {
 	  ev.currentTarget.replaceChild (src, tgt);
 	  var span = document.createElement("SPAN");
 	  srcParent.appendChild (span);
-	  console.log(srcParent.id + ' to ' + tgtParent.id );
+	
 }
 
 
 var ctrl = app.controller('homeController', ['$scope', '$sce', function($scope, $sce){
 	$scope.board = board;
+	$scope.showValidSquares = function(squareId){
+		var square = board.getSquare(squareId.charAt(0), squareId.charAt(1));
+		validMoves = evaluate.evaluateMove(square.piece);
+		square.selected = true;
+		for(var i in validMoves){
+			var validSquare = board.getSquare(validMoves[i].charAt(1), validMoves[i].charAt(0));
+			validSquare.highlight = true;
+		}
+	};
 }]);
 
 ctrl.filter('unsafe', function($sce) {
