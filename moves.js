@@ -8,8 +8,8 @@ var moves = (function(){
         }else{
             possibleMoves=[];
         }
-        
-        for(var i = parseInt(row)+1; i<9; i++){
+        var i = null;
+		for((piece.colour === "white" ? i=parseInt(row)+1 : i=parseInt(row)-1) ; (piece.colour === "white" ? i<9 : i>0); (piece.colour === "white" ? ++i : --i)){
             var pos = file+i.toString();            
             for(var j in piece.filters){
                 var filter = piece.filters[j];
