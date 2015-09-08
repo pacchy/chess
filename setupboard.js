@@ -20,25 +20,29 @@ var setupBoard = (function(){
 				file = pieceConfig.charAt(1);
 			}
 			square = board.getSquare(row, file);
-			square.piece = new Piece(new Position(row, file), 'white');
 			switch(pieceCode){
 			case 'K':
+				square.piece= new Rook(new Position(row, file), pieceSet.colour);
 				square.piece.code = pieceSet.king;
 				break;
 			case 'Q':
+				square.piece= new Rook(new Position(row, file), pieceSet.colour);
 				square.piece.code = pieceSet.queen;
 				break;
 			case 'N':
+				square.piece= new Rook(new Position(row, file), pieceSet.colour);
 				square.piece.code = pieceSet.knight;
 				break;
 			case 'B':
+				square.piece= new Rook(new Position(row, file), pieceSet.colour);
 				square.piece.code = pieceSet.bishop;
 				break;
 			case 'R':
-				square.piece= new Rook(new Position(row, file), 'white');
+				square.piece= new Rook(new Position(row, file), pieceSet.colour);
 				square.piece.code = pieceSet.rook;
 				break;
 			default:
+				square.piece= new Pawn(new Position(row, file), pieceSet.colour);
 				square.piece.code = pieceSet.pawn;
 				break;
 			}

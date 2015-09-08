@@ -5,13 +5,7 @@ var Square = function(row, col){
 		this.id= this.row.toString()+this.file.toString();
 	};
 
-var Piece = function(position, colour){
-    this.position = position;
-    this.colour = colour;
-	this.moveList = [];
-    this.filters = [board.canIMoveHere];
-	this.id=this.position.row.toString()+this.position.col.toString();
-};
+
 
 var Position = function(row, file){
     this.file = file;
@@ -58,21 +52,35 @@ var Board = function(){
 	
 };
 
-var Rook = function(position, colour){
-	Piece.call(this, position, colour);
-	this.moveList.push(moves.straightAhead);
-    
-};
-
-var Pawn = function(position, colour){
-	Piece.call(this, position, colour);
-	this.moveList.push(moves.straightAhead);
-    //this.moveList.push(moves.crossAhead);
-    this.hasMoved = false;
-    this.filters.push(this.singleMove);
-    
-    //move count filter
-    this.move = function(piece, to){
+var MoveFilters = function(){	
+	this.pawnMoves = function(piece, to){
+        var res = {};
+        res.canMove = false;
+        res.breakProbe = false;
+		
+        var toPos = new Position(to.charAt(1), to.charAt(0));
+        var fromPos = piece.position;
+        var moveCount = toPos.row - fromPos.row;
+        
+        if(moveCount ==1){
+            res.breakProbe = false;
+            res.canMove = true;
+        } else if(moveCount == 2){
+            if(piece.hasMoved){
+                res.breakProbe = true;
+                res.canMove = false;
+            }else{
+                res.breakProbe = true;
+                res.canMove = true;
+            }
+        } else{
+            res.breakProbe = true;
+            res.canMove = false;
+        }
+		return res;
+    };
+	
+	this.kingMoves = function(piece, to){
         var res = {};
         res.canMove = false;
         res.breakProbe = false;
@@ -98,9 +106,38 @@ var Pawn = function(position, colour){
             res.breakProbe = true;
             res.canMove = false;
         }
+		return res;
     };
+};
+
+var Piece = function(position, colour){
+    this.position = position;
+    this.colour = colour;
+	this.moveList = [];
+    this.filters = [board.canIMoveHere];
+	this.id=this.position.row.toString()+this.position.col.toString();
+};
+
+var Rook = function(position, colour){
+	Piece.call(this, position, colour);
+	this.moveList.push(moves.straightAhead);
     
 };
+
+var Pawn = function(position, colour){
+	Piece.call(this, position, colour);
+	this.moveList.push(moves.straightAhead);
+    //this.moveList.push(moves.crossAhead);
+    this.hasMoved = false;
+	//this.filters.push(moveFilters.pawnMoves);
+	
+    //move count filter
+    
+    
+};
+
+Pawn.prototype = Object.create(Piece.prototype);
+Pawn.prototype.constructor = Pawn;
 
 Rook.prototype = Object.create(Piece.prototype);
 Rook.prototype.constructor = Rook;

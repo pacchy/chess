@@ -10,7 +10,8 @@ var gameConfig = (function(){
 		rook: '&#9814;',
 		bishop: '&#9815;',
 		knight: '&#9816;',
-		pawn: '&#9817;'
+		pawn: '&#9817;',
+		colour: 'white'
 		},
 		black:{
 		king: '&#9818;',
@@ -18,7 +19,8 @@ var gameConfig = (function(){
 		rook: '&#9820;',
 		bishop: '&#9821;',
 		knight: '&#9822;',
-		pawn: '&#9823;'
+		pawn: '&#9823;',
+		colour: 'black'
 		}
 		};
 		

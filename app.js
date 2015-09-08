@@ -1,6 +1,8 @@
 var app = angular.module('chessApp', []);
 	
 	var board = new Board();
+	var moveFilters = new MoveFilters();
+	
 	var squareWhite=true;
 	for(var i=0;i<8;i++){
 		squareWhite=!squareWhite;
@@ -14,9 +16,9 @@ var app = angular.module('chessApp', []);
 			newRow.squares.push(newSquare);
 		}
 	}
-
-	setupBoard.loadPieces(gameConfig.newGame, board);
 	
+	setupBoard.loadPieces(gameConfig.newGame, board);
+
 
 function allowDrop(ev) {
     ev.preventDefault();
