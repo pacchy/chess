@@ -1,6 +1,6 @@
 <html>
 <head>
-<link rel="stylesheet" href="style.css"></link>
+<link rel="stylesheet" href="style1.css"></link>
 <script type="text/javascript" src="moves.js"></script>
 <script type="text/javascript" src="entities.js"></script>
 <script type="text/javascript" src="gameconfigurations.js"></script>
@@ -13,7 +13,7 @@
 </head>
 <body ng-app="chessApp">
 	<div ng-controller='homeController'>
-		<table>
+		<table class="board">
 			<tbody>
 				<tr id="{{row.id}}" ng-repeat="row in board.rows">
 					<td class='square' id='{{square.id}}' ng-class="{black:square.colour, white:!square.colour, highlight:square.highlight}" ng-click="showValidSquares(square.id)" data-ng-repeat="square in row.squares" ondrop="drop(event)" ondragover="allowDrop(event)">

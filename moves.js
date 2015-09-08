@@ -10,19 +10,20 @@ var moves = (function(){
         }
         
         for(var i = parseInt(row)+1; i<9; i++){
-              var pos = file+i.toString();
-            var res = board.canIMoveHere(piece, pos);
-			
-            if(res.canMove){
-              if(possibleMoves.indexOf(pos)<0){
-                possibleMoves.push(pos);
-                  if (res.takePiece){
-                    return possibleMoves;
-                  }
-              }
-            }else if(res.sameColourPiece==true){
-				return possibleMoves;
-			}
+            var pos = file+i.toString();            
+            for(var j in piece.filters){
+                var filter = piece.filters[j];
+                var res = filter(piece, pos);
+                
+                if(res.canMove){
+                    if(possibleMoves.indexOf(pos)<0){
+                        possibleMoves.push(pos);                      
+                    }
+                }
+                if (res.breakProbe){
+                  return possibleMoves;
+                }
+            }
         }
         return possibleMoves;
     };

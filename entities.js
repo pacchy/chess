@@ -9,6 +9,7 @@ var Piece = function(position, colour){
     this.position = position;
     this.colour = colour;
 	this.moveList = [];
+    this.filters = [board.canIMoveHere];
 	this.id=this.position.row.toString()+this.position.col.toString();
 };
 
@@ -34,20 +35,19 @@ var Board = function(){
 	this.canIMoveHere = function(piece, to){
         var res = {};
         res.canMove = false;
-        res.takePiece = false;
-		res.sameColourPiece = false;
+        res.breakProbe = false;
+		
         var square = self.getSquare(to.charAt(1), to.charAt(0));
         boardPiece = square.piece;
         
         if(boardPiece != null || boardPiece != undefined){
             if(boardPiece.colour == piece.colour){
                 res.canMove = false;
-				res.sameColourPiece = true;
             }
             else{
                 res.canMove = true;
-                res.takePiece = true;
             }
+            res.breakProbe = true;
         }
         else{
             res.canMove = true;
@@ -61,6 +61,46 @@ var Board = function(){
 var Rook = function(position, colour){
 	Piece.call(this, position, colour);
 	this.moveList.push(moves.straightAhead);
+    
 };
+
+var Pawn = function(position, colour){
+	Piece.call(this, position, colour);
+	this.moveList.push(moves.straightAhead);
+    //this.moveList.push(moves.crossAhead);
+    this.hasMoved = false;
+    this.filters.push(this.singleMove);
+    
+    //move count filter
+    this.move = function(piece, to){
+        var res = {};
+        res.canMove = false;
+        res.breakProbe = false;
+		
+        var toPos = new Position(to.charAt(1), to.charAt(0));
+        var fromPos = piece.position;
+        var moveCount = toPos.row - fromPos.row;
+        if(moveCount < 0) {moveCount = moveCount*-1;}
+        
+        //can go negative
+        if(moveCount ==1){
+            res.breakProbe = false;
+            res.canMove = true;
+        } else if(moveCount == 2){
+            if(piece.hasMoved){
+                res.breakProbe = true;
+                res.canMove = false;
+            }else{
+                res.breakProbe = true;
+                res.canMove = true;
+            }
+        } else{
+            res.breakProbe = true;
+            res.canMove = false;
+        }
+    };
+    
+};
+
 Rook.prototype = Object.create(Piece.prototype);
 Rook.prototype.constructor = Rook;
