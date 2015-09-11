@@ -1,5 +1,5 @@
 var gameConfig = (function(){
-	var newGame = { white:['Ra1', 'Nb1', 'Bc1', 'Qd1', 'Ke1', 'Bf1', 'Ng1', 'Rh1', 'b2', 'c2', 'd2', 'e2', 'f2', 'g2'],
+	var newGame = { white:['Ra1', 'Nb1', 'Bc1', 'Qd1', 'Ke1', 'Bf1', 'Ng1', 'Rh1', 'c4', 'b2', 'c2', 'd2', 'e2', 'f2', 'g2'],
 					black:['Ra8', 'Nb8', 'Bc8', 'Qd8', 'Ke8', 'Bf8', 'Ng8', 'Rh8', 'h5','a7', 'b7', 'c7', 'd7', 'e7', 'f7', 'g7', 'h7']
 					};
 					
@@ -28,4 +28,5 @@ var gameConfig = (function(){
 		newGame: newGame,
 		pieces: pieces
 		};
+    
 })();

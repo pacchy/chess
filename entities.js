@@ -61,12 +61,15 @@ var MoveFilters = function(){
         var toPos = new Position(to.charAt(1), to.charAt(0));
         var fromPos = piece.position;
         var moveCount = toPos.row - fromPos.row;
+        if(piece.colour == "black"){
+            moveCount *= -1;
+        }
         
         if(moveCount ==1){
             res.breakProbe = false;
             res.canMove = true;
         } else if(moveCount == 2){
-            if(piece.hasMoved){
+            if(piece.hasMoved()){
                 res.breakProbe = true;
                 res.canMove = false;
             }else{
@@ -95,7 +98,7 @@ var MoveFilters = function(){
             res.breakProbe = false;
             res.canMove = true;
         } else if(moveCount == 2){
-            if(piece.hasMoved){
+            if(piece.hasMoved()){
                 res.breakProbe = true;
                 res.canMove = false;
             }else{
@@ -127,13 +130,14 @@ var Rook = function(position, colour){
 var Pawn = function(position, colour){
 	Piece.call(this, position, colour);
 	this.moveList.push(moves.straightAhead);
-    //this.moveList.push(moves.crossAhead);
-    this.hasMoved = false;
-	//this.filters.push(moveFilters.pawnMoves);
+    this.moveList.push(moves.cross);
+    this.hasMoved = function(){
+        if((this.colour == "white" && this.position.row == 2) || (this.colour == "black" && this.position.row == 7)){
+            return false; 
+        }else {return true;}
+    };
+	this.filters.push(moveFilters.pawnMoves);
 	
-    //move count filter
-    
-    
 };
 
 Pawn.prototype = Object.create(Piece.prototype);
