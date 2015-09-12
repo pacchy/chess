@@ -28,6 +28,23 @@ var moves = (function(){
                         return positions;
                 
                 case "L":
+                        if((col+2) < 105 && (col+2)>96 && (row +1) <9 && (row+1)>0){
+                            positions.push(String.fromCharCode(col+2)+(row+1).toString());}
+                        if((col+2) < 105 && (col+2)>96 && (row -1) <9 && (row-1)>0){
+                            positions.push(String.fromCharCode(col+2)+(row-1).toString());}
+                        if((col-2) < 105 && (col-2)>96 && (row +1) <9 && (row+1)>0){
+                            positions.push(String.fromCharCode(col-2)+(row+1).toString());}
+                        if((col-2) < 105 && (col-2)>96 && (row -1) <9 && (row-1)>0){
+                            positions.push(String.fromCharCode(col-2)+(row-1).toString());}
+                        if((col+1) < 105 && (col+1)>96 && (row +2) <9 && (row+2)>0){
+                            positions.push(String.fromCharCode(col+1)+(row+2).toString());}
+                        if((col+1) < 105 && (col+1)>96 && (row -2) <9 && (row-2)>0){
+                            positions.push(String.fromCharCode(col+1)+(row-2).toString());}
+                        if((col-1) < 105 && (col-1)>96 && (row +2) <9 && (row+2)>0){
+                            positions.push(String.fromCharCode(col-1)+(row+2).toString());}
+                        if((col-1) < 105 && (col-1)>96 && (row -2) <9 && (row-2)>0){
+                            positions.push(String.fromCharCode(col-1)+(row-2).toString());}
+                                            
                         return positions;
                 
         }

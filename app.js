@@ -45,7 +45,8 @@ function drop(ev) {
 var ctrl = app.controller('homeController', ['$scope', '$sce', function($scope, $sce){
 	$scope.board = board;
 	$scope.showValidSquares = function(squareId){
-		var square = board.getSquare(squareId.charAt(0), squareId.charAt(1));
+        board.clearGuide();
+		var square = board.getSquare(squareId.charAt(0), squareId.charAt(1));        
 		validMoves = evaluate.evaluateMove(square.piece);
 		square.selected = true;
 		for(var i in validMoves){

@@ -18,7 +18,7 @@ height:100%;
 }
 
 .selected {
-    text-shadow: 2px 2px orange;
+    text-shadow: 2px 2px yellow;
 }
 
 .black{
@@ -37,7 +37,7 @@ border-radius: 3px;
 }
 
 td:hover { 
-    outline: 2px outset yellow;
+    outline: 2px outset green;
 	box-shadow: 2px 2px 2px black;
 	position: relative;
     border-radius: 4px;

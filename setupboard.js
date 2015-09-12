@@ -22,19 +22,19 @@ var setupBoard = (function(){
 			square = board.getSquare(row, file);
 			switch(pieceCode){
 			case 'K':
-				square.piece= new Rook(new Position(row, file), pieceSet.colour);
+				square.piece= new King(new Position(row, file), pieceSet.colour);
 				square.piece.code = pieceSet.king;
 				break;
 			case 'Q':
-				square.piece= new Rook(new Position(row, file), pieceSet.colour);
+				square.piece= new Queen(new Position(row, file), pieceSet.colour);
 				square.piece.code = pieceSet.queen;
 				break;
 			case 'N':
-				square.piece= new Rook(new Position(row, file), pieceSet.colour);
+				square.piece= new Knight(new Position(row, file), pieceSet.colour);
 				square.piece.code = pieceSet.knight;
 				break;
 			case 'B':
-				square.piece= new Rook(new Position(row, file), pieceSet.colour);
+				square.piece= new Bishop(new Position(row, file), pieceSet.colour);
 				square.piece.code = pieceSet.bishop;
 				break;
 			case 'R':
