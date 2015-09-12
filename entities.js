@@ -5,8 +5,6 @@ var Square = function(row, col){
 		this.id= this.row.toString()+this.file.toString();
 	};
 
-
-
 var Position = function(row, file){
     this.file = file;
     this.row = row;
@@ -52,7 +50,7 @@ var Board = function(){
 	
 };
 
-var MoveFilters = function(){	
+var MoveFilters = function(){
 	this.pawnMoves = function(piece, to){
         var res = {};
         res.canMove = false;
@@ -123,13 +121,13 @@ var Piece = function(position, colour){
 
 var Rook = function(position, colour){
 	Piece.call(this, position, colour);
-	this.moveList.push(moves.straightAhead);
+	this.moveList.push(moves.straight);
     
 };
 
 var Pawn = function(position, colour){
 	Piece.call(this, position, colour);
-	this.moveList.push(moves.straightAhead);
+	this.moveList.push(moves.straight);
     this.moveList.push(moves.cross);
     this.hasMoved = function(){
         if((this.colour == "white" && this.position.row == 2) || (this.colour == "black" && this.position.row == 7)){

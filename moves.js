@@ -1,38 +1,52 @@
 var moves = (function(){
-    
-	var straightAhead = function(piece, validMoves){
-        var row = piece.position.row;
-        var file = piece.position.file;
-        var possibleMoves = null;
-        if (validMoves != undefined || validMoves != null){
-            possibleMoves = validMoves;
-        }else{
-            possibleMoves=[];
-        }
-        var i = null;
-		for((piece.colour === "white" ? i=parseInt(row)+1 : i=parseInt(row)-1) ; (piece.colour === "white" ? i<9 : i>0); (piece.colour === "white" ? ++i : --i)){
-            var pos = file+i.toString();            
-            var canMove = true, breakProbe =false;
-            for(var j in piece.filters){
-                var filter = piece.filters[j];
-                var res = filter(piece, pos);
-                
-                canMove = res.canMove && canMove;
-                breakProbe = res.breakProbe || breakProbe;                
-            }            
-            if(canMove){
-                if(possibleMoves.indexOf(pos)<0){
-                    possibleMoves.push(pos);                      
-                }
-            }
-            if (breakProbe){
-              return possibleMoves;
-            }
-        }
-        return possibleMoves;
-    };
 	
-	var cross = function(piece, validMoves){
+    var getProbePositions = function(row, col, i, breakProbes, type){
+        var positions = [];
+        
+        switch(type){
+            
+                case "cross": 
+                        if ((col+i) <105 && (col+i)>96 && (row+i) <9 && (row+i)>0 && !breakProbes[0]){
+                        positions.push(String.fromCharCode(col+i)+(row+i).toString());} else {breakProbes[0] = true;positions.push(null);}
+                        if ((col-i) <105 && (col-i)>96 && (row+i) <9 && (row+i)>0 && !breakProbes[1]){
+                        positions.push(String.fromCharCode(col-i)+(row+i).toString());} else {breakProbes[1] = true;positions.push(null);}
+                        if ((col+i) <105 && (col+i)>96 && (row-i) <9 && (row-i)>0 && !breakProbes[2]){
+                        positions.push(String.fromCharCode(col+i)+(row-i).toString());} else {breakProbes[2] = true;positions.push(null);}
+                        if ((col-i) <105 && (col-i)>96 && (row-i) <9 && (row-i)>0 && !breakProbes[3]){
+                        positions.push(String.fromCharCode(col-i)+(row-i).toString());} else {breakProbes[3] = true;positions.push(null);}
+                        return positions;
+                
+                case "straight":
+                        if ((col+i) <105 && (col+i)>96 && !breakProbes[0]){
+                        positions.push(String.fromCharCode(col+i)+(row).toString());} else {breakProbes[0] = true;positions.push(null);}
+                        if ((col-i) <105 && (col-i)>96 && !breakProbes[1]){
+                        positions.push(String.fromCharCode(col-i)+(row).toString());} else {breakProbes[1] = true;positions.push(null);}
+                        if ((row+i) <9 && (row+i)>0 && !breakProbes[2]){
+                        positions.push(String.fromCharCode(col)+(row+i).toString());} else {breakProbes[2] = true;positions.push(null);}
+                        if ((row-i) <9 && (row-i)>0 && !breakProbes[3]){
+                        positions.push(String.fromCharCode(col)+(row-i).toString());} else {breakProbes[3] = true;positions.push(null);}
+                        return positions;
+                
+                case "L":
+                        return positions;
+                
+        }
+        
+    }
+    
+    var cross = function(piece, validMoves){
+        return getValidMoves(piece, validMoves, 'cross');
+    }
+    
+    var straight = function(piece, validMoves){
+        return getValidMoves(piece, validMoves, 'straight');
+    }
+    
+    var L = function(piece, validMoves){
+        return getValidMoves(piece, validMoves, 'L');
+    }
+    
+    var getValidMoves = function(piece, validMoves, type){
 		var row = parseInt(piece.position.row);
         var col = piece.position.file.charCodeAt(0);
         var possibleMoves = null;
@@ -42,47 +56,48 @@ var moves = (function(){
             possibleMoves=[];
         }
         
-		for(var i=1;i<9;i++){
-            var positions = [];
+                
+        var breakProbe = true, breakProbes = [false, false, false, false];
+        for(var i=1;i<9;i++){
+            var positions = getProbePositions(row, col, i, breakProbes, type);
             
-            if ((col+i) <105 && (col+i)>96 && (row+i) <9 && (row+i)>0){
-            positions.push(String.fromCharCode(col+i)+(row+i).toString());}
-            if ((col-i) <105 && (col-i)>96 && (row+i) <9 && (row+i)>0){
-            positions.push(String.fromCharCode(col-i)+(row+i).toString());}
-            if ((col+i) <105 && (col+i)>96 && (row-i) <9 && (row-i)>0){
-            positions.push(String.fromCharCode(col+i)+(row-i).toString());}
-            if ((col-i) <105 && (col-i)>96 && (row-i) <9 && (row-i)>0){
-            positions.push(String.fromCharCode(col-i)+(row-i).toString());}
-            
-            var breakProbe =false;
             for(var j in positions)
             {
                 var canMove = true;
                 var pos = positions[j];
-                for(var k in piece.filters){
-                    var filter = piece.filters[k];
-                    var res = filter(piece, pos);                
-                    canMove = res.canMove && canMove;
-                    breakProbe = res.breakProbe || breakProbe;                
-                }            
+                
+                if(!breakProbes[j]){
+                    for(var k in piece.filters){
+                        var filter = piece.filters[k];
+                        var res = filter(piece, pos);                
+                        canMove = res.canMove && canMove;
+                        breakProbes[j] = res.breakProbe || breakProbes[j];                
+                    }            
 
-                if(canMove){
-                    if(possibleMoves.indexOf(pos)<0){
-                        possibleMoves.push(pos);                      
+                    if(canMove){
+                        if(possibleMoves.indexOf(pos)<0){
+                            possibleMoves.push(pos);                      
+                        }
                     }
-                }
+                }                
+            }
+            
+            //break the probe if all directions are blocked already
+            for(var j in positions){
+                breakProbe = breakProbe && breakProbes[j];
             }
             if (breakProbe){
                 return possibleMoves;
             }
         }
         return possibleMoves;
-
+        
 	};
-	
+    	
 	return{
-        straightAhead: straightAhead,
-        cross: cross
+        cross: cross,
+        straight: straight,
+        L: L
     };
 	
 })();
