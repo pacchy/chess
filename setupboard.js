@@ -7,7 +7,7 @@ var setupBoard = (function(){
 	
 	var loadSet = function(pieceSetPositions, pieceSet, board){
 		for(var i in pieceSetPositions){
-			var square = null;
+			var square = null, piece=null;
 			var pieceConfig = pieceSetPositions[i];
 			var row=null, file=null, pieceCode=pieceConfig.charAt(0);
 			var isPawn = (pieceCode==pieceCode.toLowerCase());
@@ -19,34 +19,35 @@ var setupBoard = (function(){
 				row = pieceConfig.charAt(2);
 				file = pieceConfig.charAt(1);
 			}
-			square = board.getSquare(row, file);
+			//square = board.getSquare(row, file);
 			switch(pieceCode){
 			case 'K':
-				square.piece= new King(new Position(row, file), pieceSet.colour);
-				square.piece.code = pieceSet.king;
+				piece= new King(new Position(row, file), pieceSet.colour);
+				piece.code = pieceSet.king;
 				break;
 			case 'Q':
-				square.piece= new Queen(new Position(row, file), pieceSet.colour);
-				square.piece.code = pieceSet.queen;
+				piece= new Queen(new Position(row, file), pieceSet.colour);
+				piece.code = pieceSet.queen;
 				break;
 			case 'N':
-				square.piece= new Knight(new Position(row, file), pieceSet.colour);
-				square.piece.code = pieceSet.knight;
+				piece= new Knight(new Position(row, file), pieceSet.colour);
+				piece.code = pieceSet.knight;
 				break;
 			case 'B':
-				square.piece= new Bishop(new Position(row, file), pieceSet.colour);
-				square.piece.code = pieceSet.bishop;
+				piece= new Bishop(new Position(row, file), pieceSet.colour);
+				piece.code = pieceSet.bishop;
 				break;
 			case 'R':
-				square.piece= new Rook(new Position(row, file), pieceSet.colour);
-				square.piece.code = pieceSet.rook;
+				piece= new Rook(new Position(row, file), pieceSet.colour);
+				piece.code = pieceSet.rook;
 				break;
 			default:
-				square.piece= new Pawn(new Position(row, file), pieceSet.colour);
-				square.piece.code = pieceSet.pawn;
+				piece= new Pawn(new Position(row, file), pieceSet.colour);
+				piece.code = pieceSet.pawn;
 				break;
 			}
 			
+			board.placePiece(piece, row, file);
 		}
 	}
 	

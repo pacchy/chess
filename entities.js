@@ -18,6 +18,8 @@ var Row = function(){
 
 var Board = function(){
 	var self = this;
+	this.whitePieces = [];
+	this.blackPieces = [];
 	this.rows= [];
 	this.getSquare = function(row, file){
 		var col =104-file.charCodeAt(0);
@@ -32,6 +34,33 @@ var Board = function(){
             }
         }
     };
+	
+	var adversaryPieces = function(colour){
+		if(colour == 'white'){return self.whitePieces} else{return self.blackPieces};  
+	};
+	
+	this.canAdversaryLandHere = function(piece, to){
+		var adversaryCanLand = false;
+		var adversaries = adversaryPieces(piece.colour);
+		for(var i in adversaries){
+			var adversary = adversaries[i];
+			if(adversary instanceof King) {adversaryCanLand= false;}else{
+			var validMoves = evaluate.evaluateMove(adversary).supportMoves;
+			if(validMoves != null && validMoves != undefined && validMoves.indexOf(to) >-1){
+				return true;
+			}}			
+		}
+		return adversaryCanLand;
+	};
+	
+	this.placePiece = function(piece, row, col){
+		var square = self.getSquare(row, col);
+		square.piece = piece;
+		square.piece.square = square;
+		if(piece.colour == 'white'){
+			self.whitePieces.push(piece);
+		}else {self.blackPieces.push(piece);}
+	};
 	
 	this.canIMoveHere = function(piece, to){
         var res = {};
@@ -94,12 +123,7 @@ var Board = function(){
         
         if(moveCount<0){ moveCount *= -1;}
         
-        //no adversary piece can land
         
-        //if 2. rook should not have moved
-        //no pieces in between
-        //no adversary piece can land between king and rook
-        //then can castle
         
 		return res;
     };
@@ -156,12 +180,22 @@ var MoveFilters = function(){
         if(moveCount ==1){
             res.breakProbe = false;
             res.canMove = true;
+			
+			//no adversary piece can land or support
+			if( board.canAdversaryLandHere(piece, to)){
+				res.canMove = false;
+			}
+			
+			//if 2. rook should not have moved
+			//no pieces in between
+			//no adversary piece can land between king and rook
+			//then can castle
+		
         } else if(moveCount == 2){
+			res.breakProbe = true;
             if(piece.hasMoved() || piece.position.row != toPos.row){
-                res.breakProbe = true;
                 res.canMove = false;
             }else{
-                res.breakProbe = true;
                 res.canMove = true;
             }
         } else{
