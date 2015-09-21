@@ -66,7 +66,7 @@ var moves = (function(){
     var getValidMoves = function(piece, validMoves, type){
 		var row = parseInt(piece.position.row);
         var col = piece.position.file.charCodeAt(0);
-        var possibleMoves = null;
+        var possibleMoves = null, supportMoves = [];
         if (validMoves != undefined || validMoves != null){
             possibleMoves = validMoves;
         }else{
@@ -80,20 +80,27 @@ var moves = (function(){
             
             for(var j in positions)
             {
-                var canMove = true;
+                var canMove = true, supportMove = false;
                 var pos = positions[j];
                 
                 if(!breakProbes[j]){
                     for(var k in piece.filters){
                         var filter = piece.filters[k];
-                        var res = filter(piece, pos);                
-                        canMove = res.canMove && canMove;
+                        var res = filter(piece, pos);    
+						// include cannot move but can support.
+                        supportMove = canMove && (res.supportMove || res.canMove);
+						canMove = res.canMove && canMove;
                         breakProbes[j] = res.breakProbe || breakProbes[j];                
                     }            
 
                     if(canMove){
                         if(possibleMoves.indexOf(pos)<0){
                             possibleMoves.push(pos);                      
+                        }
+                    }
+					if(supportMove){
+                        if(supportMoves.indexOf(pos)<0){
+                            supportMoves.push(pos);                      
                         }
                     }
                 }                
@@ -104,10 +111,10 @@ var moves = (function(){
                 breakProbe = breakProbe && breakProbes[j];
             }
             if (breakProbe){
-                return possibleMoves;
+                return {possibleMoves:possibleMoves, supportMoves:supportMoves};
             }
         }
-        return possibleMoves;
+        return {possibleMoves:possibleMoves, supportMoves:supportMoves};
         
 	};
     	

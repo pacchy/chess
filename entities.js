@@ -44,6 +44,7 @@ var Board = function(){
         if(boardPiece != null || boardPiece != undefined){
             if(boardPiece.colour == piece.colour){
                 res.canMove = false;
+				res.supportMove = true;
             }
             else{
                 res.canMove = true;

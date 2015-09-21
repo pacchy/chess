@@ -47,7 +47,7 @@ var ctrl = app.controller('homeController', ['$scope', '$sce', function($scope, 
 	$scope.showValidSquares = function(squareId){
         board.clearGuide();
 		var square = board.getSquare(squareId.charAt(0), squareId.charAt(1));        
-		validMoves = evaluate.evaluateMove(square.piece);
+		validMoves = evaluate.evaluateMove(square.piece).supportMoves;
 		square.selected = true;
 		for(var i in validMoves){
 			var validSquare = board.getSquare(validMoves[i].charAt(1), validMoves[i].charAt(0));
