@@ -51,19 +51,19 @@ var moves = (function(){
         
     }
     
-    var cross = function(piece, validMoves){
-        return getValidMoves(piece, validMoves, 'cross');
+    var cross = function(piece, validMoves, ignoreAdversary){
+        return getValidMoves(piece, validMoves, 'cross', ignoreAdversary);
     }
     
-    var straight = function(piece, validMoves){
-        return getValidMoves(piece, validMoves, 'straight');
+    var straight = function(piece, validMoves, ignoreAdversary){
+        return getValidMoves(piece, validMoves, 'straight', ignoreAdversary);
     }
     
     var L = function(piece, validMoves){
         return getValidMoves(piece, validMoves, 'L');
     }
     
-    var getValidMoves = function(piece, validMoves, type){
+    var getValidMoves = function(piece, validMoves, type, ignoreAdversary){
 		var row = parseInt(piece.position.row);
         var col = piece.position.file.charCodeAt(0);
         var possibleMoves = null, supportMoves = [];
@@ -80,16 +80,18 @@ var moves = (function(){
             
             for(var j in positions)
             {
-                var canMove = true, supportMove = false;
+                var canMove = true, supportMove = null;
                 var pos = positions[j];
                 
                 if(!breakProbes[j]){
                     for(var k in piece.filters){
                         var filter = piece.filters[k];
-                        var res = filter(piece, pos);    
-						// include cannot move but can support.
-                        supportMove = canMove && (res.supportMove || res.canMove);
-						canMove = res.canMove && canMove;
+                        var res = filter(piece, pos, ignoreAdversary);    
+						
+			// include cannot move but can support.
+			if(res.supportMove != undefined && res.supportMove != null){                        
+			if(supportMove == null){supportMove = res.supportMove;}else { supportMove = (supportMove && res.supportMove);}}
+			canMove = res.canMove && canMove;
                         breakProbes[j] = res.breakProbe || breakProbes[j];                
                     }            
 
@@ -98,7 +100,7 @@ var moves = (function(){
                             possibleMoves.push(pos);                      
                         }
                     }
-					if(supportMove){
+		    if(supportMove){
                         if(supportMoves.indexOf(pos)<0){
                             supportMoves.push(pos);                      
                         }

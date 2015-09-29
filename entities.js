@@ -3,12 +3,14 @@ var Square = function(row, col){
 		this.file=String.fromCharCode(104-col);
 		this.highlight = false;
 		this.id= this.row.toString()+this.file.toString();
+		this.position = this.file.toString()+this.row.toString();
 	};
 
 var Position = function(row, file){
     this.file = file;
     this.row = row;
     this.col = 104-file.charCodeAt(0);
+    this.toString = function(){return this.file+this.row.toString()};
 };
 
 var Row = function(){
@@ -36,7 +38,7 @@ var Board = function(){
     };
 	
 	var adversaryPieces = function(colour){
-		if(colour == 'white'){return self.whitePieces} else{return self.blackPieces};  
+		if(colour == 'black'){return self.whitePieces} else{return self.blackPieces};  
 	};
 	
 	this.canAdversaryLandHere = function(piece, to){
@@ -44,11 +46,20 @@ var Board = function(){
 		var adversaries = adversaryPieces(piece.colour);
 		for(var i in adversaries){
 			var adversary = adversaries[i];
-			if(adversary instanceof King) {adversaryCanLand= false;}else{
-			var validMoves = evaluate.evaluateMove(adversary).supportMoves;
+			var adversaryMoves = null;
+			if(adversary instanceof King) {
+			//ignore adversary moves evaluation for adversary king.
+			adversaryMoves = evaluate.evaluateMove(adversary, true);			 
+			//adversaryMoves = {supportMoves:[]};
+			}else{
+			 adversaryMoves = evaluate.evaluateMove(adversary);
+			}			
+			var validMoves = adversaryMoves.supportMoves;
+			if (!(adversary instanceof Pawn)){
+				validMoves = validMoves.concat(adversaryMoves.possibleMoves);}
 			if(validMoves != null && validMoves != undefined && validMoves.indexOf(to) >-1){
 				return true;
-			}}			
+			}			
 		}
 		return adversaryCanLand;
 	};
@@ -99,8 +110,12 @@ var Board = function(){
             moveCount *= -1;
         }
         
+	if(piece.position.file == toPos.file || moveCount!=1){res.supportMove = false;}
         if(moveCount == 1 && piece.position.file != toPos.file){
-            if(boardPiece != null && boardPiece != undefined && boardPiece.colour != piece.colour){
+		//supported if same piece or no piece but cant move
+	    if(boardPiece == null ||(boardPiece != null && boardPiece != undefined && boardPiece.colour == piece.colour)) {res.supportMove = true;}
+            
+	    if(boardPiece != null && boardPiece != undefined && boardPiece.colour != piece.colour){
                 res.canMove = true;
             }
             else{
@@ -110,6 +125,7 @@ var Board = function(){
         }else if(moveCount == 2 && boardPiece != null && boardPiece != undefined){
             res.canMove = false;
         }
+	
 		return res;
     };
     
@@ -165,7 +181,8 @@ var MoveFilters = function(){
 		return res;
     };
 	
-	this.kingMoves = function(piece, to){
+	//king moves confirm
+	this.kingMoves = function(piece, to, ignoreAdversary){
         var res = {};
         res.canMove = false;
         res.breakProbe = false;
@@ -181,22 +198,50 @@ var MoveFilters = function(){
             res.breakProbe = false;
             res.canMove = true;
 			
+			if(!ignoreAdversary){
 			//no adversary piece can land or support
-			if( board.canAdversaryLandHere(piece, to)){
-				res.canMove = false;
+				if( board.canAdversaryLandHere(piece, to)){
+					res.canMove = false;
+				}
 			}
-			
-			//if 2. rook should not have moved
-			//no pieces in between
-			//no adversary piece can land between king and rook
-			//then can castle
 		
-        } else if(moveCount == 2){
-			res.breakProbe = true;
-            if(piece.hasMoved() || piece.position.row != toPos.row){
+        } 
+		//castleing, king, rook should not have moved
+		//no pieces in between
+		//no adversary piece can land between / on king and rook
+		//then can castle
+	else if(moveCount == 2){
+	    res.breakProbe = true;
+		
+	    if(ignoreAdversary){res.canMove = false; return res;}
+            if( board.canAdversaryLandHere(piece, piece.square.position)){
+				res.canMove = false;
+				return res;
+				}
+	    if(piece.hasMoved() || piece.position.row != toPos.row){
                 res.canMove = false;
             }else{
-                res.canMove = true;
+		var asciiCode = toPos.file.charCodeAt(0);
+		for(var i=1;i<5;i++){
+			var col = toPos.col>fromPos.col ? asciiCode-i+2: asciiCode+i-2;
+			var file = String.fromCharCode(col);
+			if (col>104 || col<97){break;}		 
+			var square = board.getSquare(fromPos.row, file);
+			if(col==104 || col==97){ 
+				var rookPiece = square.piece;
+				if(rookPiece == null || !(rookPiece instanceof Rook) || rookPiece.colour != piece.colour || rookPiece.hasMoved()){break;}	
+				if( board.canAdversaryLandHere(piece, square.position)){
+				res.canMove = false;
+				break;
+				}
+			}else{
+			if(square.piece != null) {res.canMove = false; break;} else{
+			if( board.canAdversaryLandHere(piece, square.position)){
+				res.canMove = false;
+				break;
+			}
+			res.canMove = true;} }
+		}
             }
         } else{
             res.breakProbe = true;
@@ -216,7 +261,12 @@ var Piece = function(position, colour){
 
 var Rook = function(position, colour){
 	Piece.call(this, position, colour);
-	this.moveList.push(moves.straight);    
+	this.moveList.push(moves.straight);
+
+    this.hasMoved = function(){
+        if((this.colour == "white" && this.position.row == 1 && (this.position.file == 'a' || this.position.file == 'h')) || (this.colour == "black" && this.position.row == 8 && (this.position.file == 'a' || this.position.file == 'h'))){
+            return false; 
+        }else {return true;}    };
 };
 
 var Knight = function(position, colour){

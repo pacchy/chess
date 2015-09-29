@@ -1,6 +1,6 @@
 var gameConfig = (function(){
-	var newGame = { white:['Ra1', 'Nb1', 'Bc1', 'Qd1', 'Ke1', 'Bf1', 'Ng1', 'Rh1', 'Kc5', 'b2', 'c2', 'd2', 'e2', 'f2', 'f3', 'g2'],
-					black:['Ra8', 'Nb8', 'Bc8', 'Qd8', 'Ke8', 'Bf8', 'Ng8', 'Rh8', 'h5','a7', 'b7', 'c7', 'd7', 'e7', 'f7', 'g7', 'g4', 'h7']
+	var newGame = { white:['Ra1',  'Kg7', 'Bf1', 'Ng1', 'Rh1', 'Qe5', 'b2', 'c2', 'd2', 'e2', 'f2', 'f3', 'g2'],
+					black:['Nf6', 'Ra8', 'Ke8', 'Rh8', 'h5', 'e7', 'c7', 'f7', 'g4']
 					};
 					
 	var pieces = {

@@ -1,10 +1,10 @@
 var evaluate = (function(){
 	
-	var evaluateMove = function(piece){
+	var evaluateMove = function(piece, ignoreAdversary){
 		var possibleMoves = [];
 		var supportMoves = [];
 		for(var i in piece.moveList){
-			var newMoves = piece.moveList[i](piece, possibleMoves);
+			var newMoves = piece.moveList[i](piece, possibleMoves, ignoreAdversary);
 			possibleMoves = possibleMoves.concat(newMoves.possibleMoves);
 			supportMoves = supportMoves.concat(newMoves.supportMoves);
 		}
