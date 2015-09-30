@@ -16,16 +16,17 @@
 		<table class="board">
 			<tbody>
 				<tr id="{{row.id}}" ng-repeat="row in board.rows">
-					<td class='square' id='{{square.id}}' ng-class="{black:square.colour, white:!square.colour, highlight:square.highlight}" ng-mousedown="showValidSquares(square.id)" data-ng-repeat="square in row.squares" ondrop="drop(event)" ondragover="allowDrop(event)">
-					<span id='{{square.piece.id}}' ng-class="{selected:square.selected}" draggable="true" ondragstart="drag(event)" ng-bind-html="square.piece.code | unsafe"></span></td>
+					<td class='square' id='{{square.id}}' droppable='true' ng-class="{black:square.colour, white:!square.colour, highlight:square.highlight}" ng-mousedown="showValidSquares(square.id)" data-ng-repeat="square in row.squares">
+					<span id='{{square.piece.id}}' ng-class="{selected:square.selected}" draggable='true' ng-bind-html="square.piece.code | unsafe"></span></td>
 				</tr>
 			</tbody>
 		</table>
 	<div style="font-size:20px">Copyright @Prashanth Rao</div></td>
 	<div >
+
 	<ul>
-		<li class='square black' ondrop="drop(event)" ondragover="allowDrop(event)" style="display: inline-block;"><span id="1" class='selected' draggable="true" ondragstart="drag(event)">&#9812;</span></li>
-		<li class='square white' ondrop="drop(event)" ondragover="allowDrop(event)" style="display: inline-block;"><span id="2" draggable="true" ondragstart="drag(event)">&#9818;</span></li>
+		<li id="li1" class='square black' style="display: inline-block;"><span id="1" class='selected' draggable='true'>&#9812;</span></li>
+		<li id="li2" class='square white' droppable='true' style="display: inline-block;"><span id="2" draggable='true'>&#9818;</span></li>
 		<li class='square black' ondrop="drop(event)" ondragover="allowDrop(event)" style="display: inline-block;"></li>
 		<li class='square white' ondrop="drop(event)" ondragover="allowDrop(event)" style="display: inline-block;"></li>
 		<li class='square black' ondrop="drop(event)" ondragover="allowDrop(event)" style="display: inline-block;"></li>

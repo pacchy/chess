@@ -1,6 +1,7 @@
 var evaluate = (function(){
 	
 	var evaluateMove = function(piece, ignoreAdversary){
+		if(piece == null || piece == undefined) {return [];}		
 		var possibleMoves = [];
 		var supportMoves = [];
 		for(var i in piece.moveList){

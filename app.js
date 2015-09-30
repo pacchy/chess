@@ -1,47 +1,26 @@
 var app = angular.module('chessApp', []);
 	
-	var board = new Board();
-	var moveFilters = new MoveFilters();
-	
-	var squareWhite=true;
-	for(var i=0;i<8;i++){
+var board = new Board();
+var moveFilters = new MoveFilters();
+
+var squareWhite=true;
+for(var i=0;i<8;i++){
+	squareWhite=!squareWhite;
+	var newRow = new Row();
+	newRow.squares = [];
+	board.rows.push(newRow);
+	for(var j=0;j<8;j++){
+		var newSquare = new Square(i,j);
+		if (squareWhite) {newSquare.colour=true;}else{newSquare.colour=false;}
 		squareWhite=!squareWhite;
-		var newRow = new Row();
-		newRow.squares = [];
-		board.rows.push(newRow);
-		for(var j=0;j<8;j++){
-			var newSquare = new Square(i,j);
-			if (squareWhite) {newSquare.colour=true;}else{newSquare.colour=false;}
-			squareWhite=!squareWhite;
-			newRow.squares.push(newSquare);
-		}
+		newRow.squares.push(newSquare);
 	}
-	
-	setupBoard.loadPieces(gameConfig.newGame, board);
-
-
-function allowDrop(ev) {
-    ev.preventDefault();
 }
 
-function drag(ev) {
-    ev.dataTransfer.setData("text", ev.target.id);
-}
-
-var validMoves = null;
-function drop(ev) {
-    ev.preventDefault();
-    var src = document.getElementById (ev.dataTransfer.getData("text"));
-	  var srcParent = src.parentNode;
-	  var tgt = ev.currentTarget.firstElementChild;
-	  var tgtParent = tgt.parentNode;
-
-	  ctrl.Move(srcParent.id, tgtParent.id);
-	  
-}
-
+setupBoard.loadPieces(gameConfig.newGame, board);
 
 var ctrl = app.controller('homeController', ['$scope', '$sce', function($scope, $sce){
+
 	$scope.board = board;
 	$scope.showValidSquares = function(squareId){
         board.clearGuide();
@@ -54,13 +33,70 @@ var ctrl = app.controller('homeController', ['$scope', '$sce', function($scope, 
 		}
 	};
 	
-		
+    $scope.handleDragStart = function(e) {
+      //this.style.opacity = '0.4';
+      e.dataTransfer.setData('text', this.id);
+    };
+
+    $scope.handleDragEnd = function(e) {
+      
+    };
+
+    $scope.handleDragEnter = function(e) {
+      
+    };
+    $scope.handleDragLeave = function(e) {
+      
+    };
+
+    $scope.handleDrop = function(ev) {
+      if (ev.preventDefault) {
+        ev.preventDefault();
+      }
+      if (ev.stopPropogation) {
+        ev.stopPropogation();
+      }
+
+      var dataText = ev.dataTransfer.getData("text");
+	var src = document.getElementById(ev.dataTransfer.getData("text"));
+	  var srcParent = src.parentNode;
+	  var tgt = ev.currentTarget.firstElementChild;
+	  var tgtParent = tgt.parentNode;
+	 board.Move(srcParent.id, tgtParent.id);   
+	      
+	return false;
+    };
+
+    $scope.handleDragOver = function(e) {
+      if (e.preventDefault) {
+        e.preventDefault();
+      }
+      return true;
+    };		
 
 }]);
 
-ctrl.Move = function(srcId, trgId){
-		$scope.board.Move(srcId, trgId);
-	};
+app.directive('draggable', function() {
+    return {
+        restrict : "A",
+        link : function(scope, element, attrs) {
+            element[0].addEventListener("dragstart", scope.handleDragStart, false);
+            element[0].addEventListener("dragend", scope.handleDragEnd, false);
+            element[0].addEventListener("dragenter", scope.handleDragEnter, false);
+            element[0].addEventListener("dragleave", scope.handleDragLeave, false);
+        }
+    }
+});
+
+app.directive('droppable', function() {
+    return {
+        restrict : "A",
+        link : function(scope, element, attrs) {
+            element[0].addEventListener("drop", scope.handleDrop, false);
+            element[0].addEventListener("dragover", scope.handleDragOver, false);
+        }
+    }
+});
 
 ctrl.filter('unsafe', function($sce) {
     return function(val) {

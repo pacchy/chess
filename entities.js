@@ -30,13 +30,17 @@ var Board = function(){
     
 	this.Move = function(from, to){
 		var fromSquare = self.getSquare(from.charAt(0), from.charAt(1));
- 		var toSquare = self.getSquare(to.charAt(0), to.charAt(1));
+		var piece = fromSquare.piece; 		
+		var toSquare = self.getSquare(to.charAt(0), to.charAt(1));
 		var moveTo = to.charAt(1) + to.charAt(0);
-		var validMoves = evaluate.evaluateMove(fromSquare.piece);
+		var validMoves = evaluate.evaluateMove(piece);
 		if(validMoves.possibleMoves.indexOf(moveTo) >-1){
-			toSquare.piece = fromSquare.piece;
-			fromSquare.piece = null;
+			toSquare.piece = piece;
+			piece.square = toSquare;
+			piece.position = new Position(to.charAt(0), to.charAt(1));
+			fromSquare.piece = undefined;
 		}
+		self.clearGuide();
 	};
 	    this.clearGuide = function(){
 		for(var i in this.rows){
