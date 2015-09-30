@@ -35,10 +35,9 @@ function drop(ev) {
 	  var srcParent = src.parentNode;
 	  var tgt = ev.currentTarget.firstElementChild;
 	  var tgtParent = tgt.parentNode;
-	  ev.currentTarget.replaceChild (src, tgt);
-	  var span = document.createElement("SPAN");
-	  srcParent.appendChild (span);
-	
+
+	  ctrl.Move(srcParent.id, tgtParent.id);
+	  
 }
 
 
@@ -54,7 +53,14 @@ var ctrl = app.controller('homeController', ['$scope', '$sce', function($scope, 
 			validSquare.highlight = true;
 		}
 	};
+	
+		
+
 }]);
+
+ctrl.Move = function(srcId, trgId){
+		$scope.board.Move(srcId, trgId);
+	};
 
 ctrl.filter('unsafe', function($sce) {
     return function(val) {

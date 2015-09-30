@@ -28,14 +28,24 @@ var Board = function(){
 		return self.rows[row-1].squares[col];
 	};
     
-    this.clearGuide = function(){
-        for(var i in this.rows){
-            for(var j in this.rows[i].squares){
-                this.rows[i].squares[j].selected = false;
-                this.rows[i].squares[j].highlight = false;
-            }
-        }
-    };
+	this.Move = function(from, to){
+		var fromSquare = self.getSquare(from.charAt(0), from.charAt(1));
+ 		var toSquare = self.getSquare(to.charAt(0), to.charAt(1));
+		var moveTo = to.charAt(1) + to.charAt(0);
+		var validMoves = evaluate.evaluateMove(fromSquare.piece);
+		if(validMoves.possibleMoves.indexOf(moveTo) >-1){
+			toSquare.piece = fromSquare.piece;
+			fromSquare.piece = null;
+		}
+	};
+	    this.clearGuide = function(){
+		for(var i in this.rows){
+		    for(var j in this.rows[i].squares){
+		        this.rows[i].squares[j].selected = false;
+		        this.rows[i].squares[j].highlight = false;
+		    }
+		}
+	    };
 	
 	var adversaryPieces = function(colour){
 		if(colour == 'black'){return self.whitePieces} else{return self.blackPieces};  
