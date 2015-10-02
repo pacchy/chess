@@ -20,6 +20,7 @@ var Row = function(){
 
 var Board = function(){
 	var self = this;
+	this.Moves = [];
 	this.whitePieces = [];
 	this.blackPieces = [];
 	this.rows= [];
@@ -39,17 +40,19 @@ var Board = function(){
 			piece.square = toSquare;
 			piece.position = new Position(to.charAt(0), to.charAt(1));
 			fromSquare.piece = undefined;
+			self.Moves.push({from, to});
 		}
 		self.clearGuide();
 	};
 	    this.clearGuide = function(){
 		for(var i in this.rows){
 		    for(var j in this.rows[i].squares){
-		        this.rows[i].squares[j].selected = false;
-		        this.rows[i].squares[j].highlight = false;
+			this.rows[i].squares[j].selected = false;
+			this.rows[i].squares[j].highlight = false;
 		    }
 		}
 	    };
+
 	
 	var adversaryPieces = function(colour){
 		if(colour == 'black'){return self.whitePieces} else{return self.blackPieces};  
@@ -63,8 +66,7 @@ var Board = function(){
 			var adversaryMoves = null;
 			if(adversary instanceof King) {
 			//ignore adversary moves evaluation for adversary king.
-			adversaryMoves = evaluate.evaluateMove(adversary, true);			 
-			//adversaryMoves = {supportMoves:[]};
+			adversaryMoves = evaluate.evaluateMove(adversary, true);
 			}else{
 			 adversaryMoves = evaluate.evaluateMove(adversary);
 			}			
@@ -104,6 +106,8 @@ var Board = function(){
                 res.canMove = true;
             }
             res.breakProbe = true;
+	    if(boardPiece.colour != piece.colour && (boardPiece instanceof King))
+	    {	res.breakSupportProbe = false; res.supportMove = true;}else{ res.breakSupportProbe = true;}
         }
         else{
             res.canMove = true;
@@ -133,8 +137,12 @@ var Board = function(){
                 res.canMove = true;
             }
             else{
-                //if enpassment res.canMove = true;
-                res.canMove = false;
+                //enpassment check
+                var lastMove = self.Moves[self.Moves.length-1];
+		var toRow = parseInt(to.charAt(1));
+		var lastMovedPiece = lastMove != undefined ? self.getSquare(lastMove.to.charAt(0), lastMove.to.charAt(1)).piece : undefined;
+		if (lastMove != undefined &&  lastMove.from.charAt(1)==to.charAt(0) && Math.abs(parseInt(lastMove.from.charAt(0))-parseInt(lastMove.to.charAt(0))) == 2 && lastMovedPiece!= undefined && (lastMovedPiece instanceof Pawn)){res.canMove = true;}else{
+		res.canMove = false;}
             }
         }else if(moveCount == 2 && boardPiece != null && boardPiece != undefined){
             res.canMove = false;
@@ -205,9 +213,8 @@ var MoveFilters = function(){
         var fromPos = piece.position;
         var moveCount = toPos.row - fromPos.row;
         if(toPos.row == fromPos.row) {moveCount = toPos.col-fromPos.col};
-        if(moveCount < 0) {moveCount = moveCount*-1;}
+        moveCount = moveCount < 0 ? Math.abs(moveCount): moveCount;
         
-        //can go negative
         if(moveCount ==1){
             res.breakProbe = false;
             res.canMove = true;
