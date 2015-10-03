@@ -108,6 +108,10 @@ var Board = function(){
             res.breakProbe = true;
 	    if(boardPiece.colour != piece.colour && (boardPiece instanceof King))
 	    {	res.breakSupportProbe = false; res.supportMove = true;}else{ res.breakSupportProbe = true;}
+
+	    if(boardPiece.colour != piece.colour && boardPiece.position.file==piece.position.file && (piece instanceof Pawn))
+	    {	res.canMove = false; 
+        	}
         }
         else{
             res.canMove = true;
