@@ -74,7 +74,7 @@ var moves = (function(){
         }
         
                 
-        var breakProbe = true, breakProbes = [false, false, false, false];
+        var breakProbe = true, breakProbes = [false, false, false, false], supportProbes = [false, false, false, false];
         for(var i=1;i<9;i++){
             var positions = getProbePositions(row, col, i, breakProbes, type);
             
@@ -86,7 +86,9 @@ var moves = (function(){
                 if(!breakProbes[j]){
                     for(var k in piece.filters){
                         var filter = piece.filters[k];
-                        var res = filter(piece, pos, ignoreAdversary);    
+                        var res = null;
+			if (supportProbes[j]){
+			res = filter(piece, pos, 'supportCheck');}else{res = filter(piece, pos, ignoreAdversary);}    
 						
 			// include cannot move but can support.
 			if(res.supportMove != undefined && res.supportMove != null){                        
@@ -101,6 +103,7 @@ var moves = (function(){
                         }
                     }
 		    if(supportMove){
+			supportProbes[j] = supportMove;
                         if(supportMoves.indexOf(pos)<0){
                             supportMoves.push(pos);                      
                         }

@@ -41,6 +41,7 @@ var Board = function(){
 			piece.position = new Position(to.charAt(0), to.charAt(1));
 			fromSquare.piece = undefined;
 			self.Moves.push({from, to});
+			if (piece.moved != undefined) {piece.moved();}
 		}
 		self.clearGuide();
 	};
@@ -89,7 +90,7 @@ var Board = function(){
 		}else {self.blackPieces.push(piece);}
 	};
 	
-	this.canIMoveHere = function(piece, to){
+	this.canIMoveHere = function(piece, to, supportMoveCheck){
         var res = {};
         res.canMove = false;
         res.breakProbe = false;
@@ -98,25 +99,28 @@ var Board = function(){
         boardPiece = square.piece;
         
         if(boardPiece != null || boardPiece != undefined){
-            if(boardPiece.colour == piece.colour){
+            res.breakProbe = true;
+	    if(boardPiece.colour == piece.colour){
                 res.canMove = false;
-				res.supportMove = true;
+		res.supportMove = true;
             }
             else{
                 res.canMove = true;
             }
-            res.breakProbe = true;
+            
 	    if(boardPiece.colour != piece.colour && (boardPiece instanceof King))
-	    {	res.breakSupportProbe = false; res.supportMove = true;}else{ res.breakSupportProbe = true;}
+	    {	res.breakProbe = false; res.supportMove = true;
+		}
 
 	    if(boardPiece.colour != piece.colour && boardPiece.position.file==piece.position.file && (piece instanceof Pawn))
-	    {	res.canMove = false; 
+	    {	res.canMove = false;
         	}
         }
         else{
             res.canMove = true;
         }
         
+	if(supportMoveCheck!= undefined && supportMoveCheck=='supportCheck'){if (res.canMove) { res.canMove = false; res.supportMove = true;}}
         return res;
     };
     
@@ -254,7 +258,7 @@ var MoveFilters = function(){
 			var square = board.getSquare(fromPos.row, file);
 			if(col==104 || col==97){ 
 				var rookPiece = square.piece;
-				if(rookPiece == null || !(rookPiece instanceof Rook) || rookPiece.colour != piece.colour || rookPiece.hasMoved()){break;}	
+				if(rookPiece == null || !(rookPiece instanceof Rook) || rookPiece.colour != piece.colour || rookPiece.hasMoved()){res.canMove = false; break;}	
 				if( board.canAdversaryLandHere(piece, square.position)){
 				res.canMove = false;
 				break;
@@ -288,7 +292,10 @@ var Rook = function(position, colour){
 	Piece.call(this, position, colour);
 	this.moveList.push(moves.straight);
 
+	var hasMoved = false;
+	this.moved = function(){ hasMoved = true;}
     this.hasMoved = function(){
+	if(hasMoved){return true;}
         if((this.colour == "white" && this.position.row == 1 && (this.position.file == 'a' || this.position.file == 'h')) || (this.colour == "black" && this.position.row == 8 && (this.position.file == 'a' || this.position.file == 'h'))){
             return false; 
         }else {return true;}    };
@@ -317,25 +324,31 @@ var King = function(position, colour){
     this.filters.push(moveFilters.kingMoves);
     //this.filters.push(board.kingMoves);
     
+	var hasMoved = false;
+	this.moved = function(){ hasMoved = true;}
     this.hasMoved = function(){
+	if(hasMoved){return true;}	
         if((this.colour == "white" && this.position.row == 1 && this.position.file == 'e') || (this.colour == "black" && this.position.row == 8 && this.position.file == 'e')){
             return false; 
         }else {return true;}
+
     };
 };
 
 var Pawn = function(position, colour){
 	Piece.call(this, position, colour);
+	var hasMoved = false;
 	this.moveList.push(moves.straight);
     this.moveList.push(moves.cross);
     this.hasMoved = function(){
+        if(hasMoved){return true;}
         if((this.colour == "white" && this.position.row == 2) || (this.colour == "black" && this.position.row == 7)){
             return false; 
         }else {return true;}
     };
-	this.filters.push(moveFilters.pawnMoves);
+    this.filters.push(moveFilters.pawnMoves);
     this.filters.push(board.pawnMoves);
-	
+    this.moved = function(){ hasMoved = true;}
 };
 
 Pawn.prototype = Object.create(Piece.prototype);
