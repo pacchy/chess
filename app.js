@@ -1,22 +1,8 @@
 var app = angular.module('chessApp', []);
-	
+var game = new Game();
+game.init();	
 var board = new Board();
-var moveFilters = new MoveFilters();
-
-var squareWhite=true;
-for(var i=0;i<8;i++){
-	squareWhite=!squareWhite;
-	var newRow = new Row();
-	newRow.squares = [];
-	board.rows.push(newRow);
-	for(var j=0;j<8;j++){
-		var newSquare = new Square(i,j);
-		if (squareWhite) {newSquare.colour=true;}else{newSquare.colour=false;}
-		squareWhite=!squareWhite;
-		newRow.squares.push(newSquare);
-	}
-}
-
+board.init();
 setupBoard.loadPieces(gameConfig.newGame, board);
 
 var ctrl = app.controller('homeController', ['$scope', '$sce', function($scope, $sce){
@@ -72,7 +58,11 @@ var ctrl = app.controller('homeController', ['$scope', '$sce', function($scope, 
         e.preventDefault();
       }
       return true;
-    };		
+    };
+
+    $scope.playWhite = function(playerNumber, playWhite){
+		game.sit(playerNumber, playWhite);
+	};		
 
 }]);
 

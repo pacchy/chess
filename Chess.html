@@ -2,6 +2,7 @@
 <head>
 <link rel="stylesheet" href="css/style1.css"></link>
 <script type="text/javascript" src="js/moves.js"></script>
+<script type="text/javascript" src="js/board.js"></script>
 <script type="text/javascript" src="js/entities.js"></script>
 <script type="text/javascript" src="js/gameconfigurations.js"></script>
 <script type="text/javascript" src="js/setupboard.js"></script>
@@ -13,9 +14,12 @@
 </head>
 <body ng-app="chessApp">
 	<div ng-controller='homeController'>
-		<table class="board">
+	<input type="button" id="playWhite" value="Play White" ng-click="playWhite(1, true)"></input>
+	<input type="button" id="playBlack" value="Play Black" ng-click="playWhite(1, false)"></input>
+		
+	<table class="board">
 			<tbody>
-				<tr id="{{row.id}}" ng-repeat="row in board.rows">
+				<tr id="{{row.id}}" ng-repeat="row in board.getRows(1)">
 					<td class='square' id='{{square.id}}' droppable='true' ng-class="{black:square.colour, white:!square.colour, highlight:square.highlight}" ng-mousedown="showValidSquares(square.id)" data-ng-repeat="square in row.squares">
 					<span id='{{square.piece.id}}' ng-class="{selected:square.selected}" draggable='true' ng-bind-html="square.piece.code | unsafe"></span></td>
 				</tr>
@@ -27,13 +31,6 @@
 	<ul>
 		<li id="li1" class='square black' style="display: inline-block;"><span id="1" class='selected' draggable='true'>&#9812;</span></li>
 		<li id="li2" class='square white' droppable='true' style="display: inline-block;"><span id="2" draggable='true'>&#9818;</span></li>
-		<li class='square black' ondrop="drop(event)" ondragover="allowDrop(event)" style="display: inline-block;"></li>
-		<li class='square white' ondrop="drop(event)" ondragover="allowDrop(event)" style="display: inline-block;"></li>
-		<li class='square black' ondrop="drop(event)" ondragover="allowDrop(event)" style="display: inline-block;"></li>
-		<li class='square white' ondrop="drop(event)" ondragover="allowDrop(event)" style="display: inline-block;"></li>
-		<li class='square black' ondrop="drop(event)" ondragover="allowDrop(event)" style="display: inline-block;"></li>
-		<li class='square white' ondrop="drop(event)" ondragover="allowDrop(event)" style="display: inline-block;"></li>
-		
 	</ul>
 	</div>
 	</div>
