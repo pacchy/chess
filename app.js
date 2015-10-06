@@ -9,8 +9,9 @@ var ctrl = app.controller('homeController', ['$scope', '$sce', function($scope, 
 
 	$scope.board = board;
 	$scope.showValidSquares = function(squareId){
-        board.clearGuide();
+        	board.clearGuide();
 		var square = board.getSquare(squareId.charAt(0), squareId.charAt(1));        
+		if(square.piece != undefined && !board.validColourMove(square.piece.colour)){return;}		
 		validMoves = evaluate.evaluateMove(square.piece).possibleMoves;
 		square.selected = true;
 		for(var i in validMoves){
@@ -48,6 +49,8 @@ var ctrl = app.controller('homeController', ['$scope', '$sce', function($scope, 
 	  var srcParent = src.parentNode;
 	  var tgt = ev.currentTarget.firstElementChild;
 	  var tgtParent = tgt.parentNode;
+	  var square = board.getSquare(srcParent.id.charAt(0), srcParent.id.charAt(1));
+	 if(square.piece != undefined && !board.validColourMove(square.piece.colour)){return;}
 	 board.Move(srcParent.id, tgtParent.id);   
 	      
 	return false;

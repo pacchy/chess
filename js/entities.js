@@ -13,9 +13,15 @@ var Game = function(){
 	this.players[otherPlayer].playingWhite = !playingWhite;
 	};
 
+
+
 	this.playingWhite = function(playerNumber){
 	 if(this.players[playerNumber].playingWhite){return true;} else {return false;}
 	};
+
+	this.whiteToPlay = function(){
+		return board.whiteToPlay();	
+	}
 };
 
 var Player = function(playerName, playingWhite){
