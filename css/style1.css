@@ -51,11 +51,13 @@ height:100%;
 }
 
 .highlight{
-
-border-radius: 5px;
+border-radius: 2px;
  outline: none;
-border-color: yellow;
-    box-shadow: 0 0 20px yellow;
+border-color: black;
+    box-shadow: 1px 0px 30px 3px white;
+    background-color: yellow;
+	opacity:.5;
+	z-index:2;
 }
 
 td:hover { 
