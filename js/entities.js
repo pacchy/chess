@@ -117,7 +117,7 @@ var Pawn = function(position, colour){
         }else {return true;}
     };
     this.filters.push(board.pawnMoves);
-    this.filters.push(board.pawnEnpassMoves);
+    //this.filters.push(board.pawnEnpassMoves);
     this.moved = function(){ hasMoved = true;}
 };
 

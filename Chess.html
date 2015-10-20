@@ -19,7 +19,7 @@
 		
 	<table class="board">
 			<tbody>
-				<tr id="{{row.id}}" ng-repeat="row in board.getRows(1)">
+				<tr id="{{row.id}}" ng-repeat="row in board.rows">
 					<td class='square' id='{{square.id}}' droppable='true' ng-class="{black:square.colour, white:!square.colour, highlight:square.highlight}" ng-mousedown="showValidSquares(square.id)" data-ng-repeat="square in row.squares">
 					<span id='{{square.piece.id}}' ng-class="{selected:square.selected, highlight:square.highlight}" draggable='true' ng-bind-html="square.piece.code | unsafe"></span></td>
 				</tr>
