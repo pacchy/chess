@@ -40,8 +40,9 @@ var Board = function(){
 			fromSquare.piece = undefined;
 			self.Moves.push({from, to});
 			if (piece.moved != undefined) {piece.moved();}
+			self.whiteToMove = !self.whiteToMove;		
 		}
-		self.whiteToMove = !self.whiteToMove;
+		
 		self.clearGuide();
 	};
 	    this.clearGuide = function(){
@@ -118,7 +119,7 @@ var Board = function(){
         else{
             res.canMove = true;
         }
-        
+        	
 	if(supportMoveCheck!= undefined && supportMoveCheck=='supportCheck'){if (res.canMove) { res.canMove = false; res.supportMove = true;}}
         return res;
     };
@@ -151,10 +152,15 @@ var Board = function(){
 		if (lastMove != undefined &&  lastMove.from.charAt(1)==to.charAt(0) && Math.abs(parseInt(lastMove.from.charAt(0))-parseInt(lastMove.to.charAt(0))) == 2 && lastMovedPiece!= undefined && (lastMovedPiece instanceof Pawn)){res.canMove = true;}else{
 		res.canMove = false;}
             }
-        }else if(moveCount == 2 && boardPiece != null && boardPiece != undefined){
-            res.canMove = false;
-        }
-	
+        }else if(moveCount == 2) {
+			if (fromPos.file == toPos.file && !piece.hasMoved()) { res.canMove = true; } else {res.canMove = false;}
+			res.breakProbe = true;
+			}
+		else{
+			//res.canMove = false;	
+			res.breakProbe = true;	
+		}
+
 		return res;
     };
     
