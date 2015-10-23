@@ -51,11 +51,13 @@ var Row = function(){
 };
 
 var Piece = function(position, colour){
+	var self = this;
     this.position = position;
     this.colour = colour;
 	this.moveList = [];
     this.filters = [board.canIMoveHere];
 	this.id=this.position.row.toString()+this.position.col.toString();
+	this.isWhite = function(){ return self.colour=="white";}
 };
 
 var Rook = function(position, colour){

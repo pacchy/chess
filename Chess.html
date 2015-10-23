@@ -29,8 +29,10 @@
 	<div >
 
 	<ul>
-		<li id="li1" class='square black' style="display: inline-block;"><span id="1" class='selected' draggable='true'>&#9812;</span></li>
-		<li id="li2" class='square white' droppable='true' style="display: inline-block;"><span id="2" draggable='true'>&#9818;</span></li>
+		<li id="li1" id="{piece.id}" class='square white' ng-repeat="piece in takenPieces | filter:isWhite" style="display: inline-block;"><span id="{piece.id}" class='selected' draggable='true' ng-bind-html="piece.code | unsafe"></span></li>
+	</ul>
+	<ul>
+		<li id="li1" id="{piece.id}" class='square black' ng-repeat="piece in takenPieces | filter:isBlack" style="display: inline-block;"><span id="{piece.id}" class='selected' draggable='true' ng-bind-html="piece.code | unsafe"></span></li>
 	</ul>
 	</div>
 	</div>

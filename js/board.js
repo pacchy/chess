@@ -4,6 +4,7 @@ var Board = function(){
 	this.whitePieces = [];
 	this.blackPieces = [];
 	this.rows= [];
+	this.takenPieces = [];
 	this.whiteToMove = true;
 	this.getSquare = function(row, file){
 		var col =104-file.charCodeAt(0);
@@ -34,13 +35,35 @@ var Board = function(){
 		var moveTo = to.charAt(1) + to.charAt(0);
 		var validMoves = evaluate.evaluateMove(piece);
 		if(validMoves.possibleMoves.indexOf(moveTo) >-1){
+			var toPos = new Position(to.charAt(0), to.charAt(1));
+			var fromPos = new Position(from.charAt(0), from.charAt(1));			
+			if (toSquare.piece != undefined) {toSquare.piece.square = undefined; self.takenPieces.push(toSquare.piece);}			
+			if (piece instanceof Pawn && Math.abs(toPos.col-fromPos.col)==1 && Math.abs(toPos.row-fromPos.row)==1 && toSquare.piece == undefined){
+				var adversaryPawnSquare = self.getSquare(fromPos.row, toPos.file);
+				adversaryPawnSquare.piece.square = undefined;
+				self.takenPieces.push(adversaryPawnSquare.piece);
+				adversaryPawnSquare.piece = undefined;	
+			}
+
 			toSquare.piece = piece;
 			piece.square = toSquare;
 			piece.position = new Position(to.charAt(0), to.charAt(1));
 			fromSquare.piece = undefined;
 			self.Moves.push({from, to});
 			if (piece.moved != undefined) {piece.moved();}
-			self.whiteToMove = !self.whiteToMove;		
+			if (piece instanceof King && Math.abs(toPos.col-fromPos.col)==2){
+				//castle
+				var rookFromFile = null, rookToFile = null;
+				if(toPos.file == 'c') {rookFromFile = 'a';rookToFile='d';} else {rookFromFile='h';rookToFile='f';}
+				var rookFromSquare = self.getSquare(toPos.row, rookFromFile);
+				var rookToSquare = self.getSquare(toPos.row, rookToFile);
+				rookToSquare.piece = rookFromSquare.piece;
+				rookToSquare.piece.position = new Position(toPos.row, rookToFile);
+				rookFromSquare.piece = undefined;
+			}
+
+			
+			self.whiteToMove = !self.whiteToMove;	
 		}
 		
 		self.clearGuide();
@@ -136,30 +159,32 @@ var Board = function(){
             moveCount *= -1;
         }
         
-	if(piece.position.file == toPos.file || moveCount!=1){res.supportMove = false;}
-        if(moveCount == 1 && piece.position.file != toPos.file){
-		//supported if same piece or no piece but cant move
-	    if(boardPiece == null ||(boardPiece != null && boardPiece != undefined && boardPiece.colour == piece.colour)) {res.supportMove = true;}
-            
-	    if(boardPiece != null && boardPiece != undefined && boardPiece.colour != piece.colour){
-                res.canMove = true;
-            }
-            else{
-                //enpassment check
-                var lastMove = self.Moves[self.Moves.length-1];
-		var toRow = parseInt(to.charAt(1));
-		var lastMovedPiece = lastMove != undefined ? self.getSquare(lastMove.to.charAt(0), lastMove.to.charAt(1)).piece : undefined;
-		if (lastMove != undefined &&  lastMove.from.charAt(1)==to.charAt(0) && Math.abs(parseInt(lastMove.from.charAt(0))-parseInt(lastMove.to.charAt(0))) == 2 && lastMovedPiece!= undefined && (lastMovedPiece instanceof Pawn)){res.canMove = true;}else{
-		res.canMove = false;}
-            }
+		if(piece.position.file == toPos.file || moveCount!=1){res.supportMove = false;}
+	        if(moveCount == 1 ){
+				res.breakProbe = false;
+				if(piece.position.file != toPos.file){
+					//supported if same piece or no piece but cant move
+			    	if(boardPiece == null ||(boardPiece != null && boardPiece != undefined && boardPiece.colour == piece.colour)) {res.supportMove = true;}
+		            
+			    	if(boardPiece != null && boardPiece != undefined && boardPiece.colour != piece.colour){
+		                res.canMove = true;
+		            }
+		            else{
+		                //enpassment check
+			            var lastMove = self.Moves[self.Moves.length-1];
+						var toRow = parseInt(to.charAt(1));
+						var lastMovedPiece = lastMove != undefined ? self.getSquare(lastMove.to.charAt(0), lastMove.to.charAt(1)).piece : undefined;
+						if (lastMove != undefined &&  lastMove.from.charAt(1)==to.charAt(0) && Math.abs(parseInt(lastMove.from.charAt(0))-parseInt(lastMove.to.charAt(0))) == 2 && lastMovedPiece!= undefined && (lastMovedPiece instanceof Pawn) && Math.abs(parseInt(lastMove.from.charAt(0))-parseInt(to.charAt(1))) == 1){res.canMove = true;}else{
+							res.canMove = false;
+						}
+	            }
+	        }
         }else if(moveCount == 2) {
 			if (fromPos.file == toPos.file && !piece.hasMoved()) { res.canMove = true; } else {res.canMove = false;}
 			res.breakProbe = true;
-			}
-		else{
-			//res.canMove = false;	
-			res.breakProbe = true;	
-		}
+		}else {
+			res.canMove = false;	
+			res.breakProbe = true;}
 
 		return res;
     };

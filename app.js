@@ -8,6 +8,7 @@ setupBoard.loadPieces(gameConfig.newGame, board);
 var ctrl = app.controller('homeController', ['$scope', '$sce', function($scope, $sce){
 
 	$scope.board = board;
+  $scope.takenPieces = board.takenPieces;
 	$scope.showValidSquares = function(squareId){
         	board.clearGuide();
 		var square = board.getSquare(squareId.charAt(0), squareId.charAt(1));        
@@ -19,6 +20,9 @@ var ctrl = app.controller('homeController', ['$scope', '$sce', function($scope, 
 			validSquare.highlight = true;
 		}
 	};
+
+  $scope.isWhite=function(piece){return piece.colour=='white';}
+  $scope.isBlack=function(piece){return piece.colour=='black';}
 	
     $scope.handleDragStart = function(e) {
       //this.style.opacity = '0.4';
