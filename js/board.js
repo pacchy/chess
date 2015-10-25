@@ -6,6 +6,18 @@ var Board = function(){
 	this.rows= [];
 	this.takenPieces = [];
 	this.whiteToMove = true;
+	this.whiteRows = [];
+	this.playingRows = null;
+	this.getWhiteRows = function(showWhite){
+
+		if(showWhite){
+			return self.whiteRows;
+		}else{
+			return self.rows;
+		}
+
+	}
+
 	this.getSquare = function(row, file){
 		var col =104-file.charCodeAt(0);
 		return self.rows[row-1].squares[col];
@@ -25,6 +37,17 @@ var Board = function(){
 				newRow.squares.push(newSquare);
 			}
 		}
+
+		for (var i = 7; i >= 0; i--) {
+			var newRow = new Row();
+			newRow.squares = [];
+			self.whiteRows.push(newRow);
+			for (var j = 7; j >= 0; j--) {
+				newRow.squares.push(self.rows[i].squares[j]);
+			};
+		};
+
+		self.playingRows = self.whiteRows;
 		
 	};
     

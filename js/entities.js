@@ -11,6 +11,12 @@ var Game = function(){
 	this.players[playerNumber].playing = true;
 	this.players[playerNumber].playingWhite = playingWhite;
 	this.players[otherPlayer].playingWhite = !playingWhite;
+		if(playingWhite){
+			board.playingRows = board.whiteRows;
+		}else{
+			board.playingRows = board.rows;
+		}
+
 	};
 
 
