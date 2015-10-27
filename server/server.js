@@ -6,11 +6,8 @@ var gameService = require('./app/models/gameservice');
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(bodyParser.json());
 
-var port = process.env.PORT || 8080;
+var port = process.env.PORT || 8888;
 var router = express.Router();
-
-var mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost:27017/test');
 
 
 router.get('/', function(req, res) {
