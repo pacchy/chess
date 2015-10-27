@@ -2,6 +2,7 @@ var app = angular.module('chessApp', []);
 var game = new Game();
 game.init();	
 var board = new Board();
+game.board = board;
 board.init();
 setupBoard.loadPieces(gameConfig.newGame, board);
 

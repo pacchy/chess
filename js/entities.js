@@ -1,5 +1,7 @@
 var Game = function(){
 	this.players = [];
+	this.board = null;
+	
 	this.init = function(){
 	  this.players.push(new Player('player1', true));
 	  this.players.push(new Player('player2', false));

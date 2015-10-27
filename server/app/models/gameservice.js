@@ -2,6 +2,8 @@
 (function(){
 	
 	var mongoose = require('mongoose');	 
+	var db = mongoose.connect('mongodb://127.0.0.1:27017/chess');
+
 	var getGameById = function(id, callbackFn){
 	  var game = {id:12345, player1:{name:'prashanth', playingWhite:true}, player2:{name:'test', playingWhite:false}};
 
