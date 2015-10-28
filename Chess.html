@@ -9,6 +9,7 @@
 <script type="text/javascript" src="lib/angular/angular.min.js"></script>
 <script type="text/javascript" src="lib/angular/angular-sanitize.js"></script>
 <script type="text/javascript" src="app.js"></script>
+<script type="text/javascript" src="js/gameservice.js"></script>
 <script type="text/javascript" src="js/evaluate.js"></script>
 
 </head>
@@ -16,8 +17,9 @@
 	<div ng-controller='homeController'>
 	<input type="button" id="playWhite" value="Play White" ng-click="playWhite(1, true)"></input>
 	<input type="button" id="playBlack" value="Play Black" ng-click="playWhite(1, false)"></input>
+	<input type="button" id="newGame" value="New Game" ng-click="newGame()"></input>
 		
-	<table class="board">
+	<table class="board" style="display:none">
 			<tbody>
 				<tr id="{{row.id}}" ng-repeat="row in board.playingRows">
 					<td class='square' id='{{square.id}}' droppable='true' ng-class="{black:square.colour, white:!square.colour, highlight:square.highlight}" ng-mousedown="showValidSquares(square.id)" data-ng-repeat="square in row.squares">

@@ -6,10 +6,17 @@ game.board = board;
 board.init();
 setupBoard.loadPieces(gameConfig.newGame, board);
 
-var ctrl = app.controller('homeController', ['$scope', '$sce', function($scope, $sce){
+var ctrl = app.controller('homeController', ['$scope', '$sce', 'gameService', function($scope, $sce, $gameService){
 
 	$scope.board = board;
   $scope.takenPieces = board.takenPieces;
+
+  $scope.newGame = function()
+  {
+     //service new game
+     $gameService.newGame();
+  };
+
 	$scope.showValidSquares = function(squareId){
         	board.clearGuide();
 		var square = board.getSquare(squareId.charAt(0), squareId.charAt(1));        

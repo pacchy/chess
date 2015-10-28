@@ -33,7 +33,6 @@ router.route('/games/:gameId')
         gameService.getGameById(req.params.gameId, function(err, game) {
             if (err)
                 res.send(err);
-	console.log('got here');
             res.json(game);
         });
     });
@@ -46,8 +45,8 @@ router.route('/games')
             res.json(games);
         });
     })
-    .post(function(){
-	gameService.createGame(function(err, game) {
+    .post(function(req, res){
+	gameService.createGame(null, function(err, game) {
             if (err)
                 res.send(err);
             res.json(game);

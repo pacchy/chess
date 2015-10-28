@@ -4,23 +4,25 @@
 	var mongoose = require('mongoose');	 
 	var db = mongoose.connect('mongodb://127.0.0.1:27017/chess');
 	var Schema = mongoose.Schema;
-	var gameSchema = new Schema({});
-	var Game = mongoose.model('game', gameSchema);
+	var BoardSchema = {};
+	var gameSchema = new Schema({id:String, player1:{name:String, playingWhite:Boolean}, player2:{name:String, playingWhite:Boolean}, board: BoardSchema});
+	var Game = db.model('game', gameSchema);
 
 	var getGameById = function(id, callbackFn){
-	  var game = {id:12345, player1:{name:'prashanth', playingWhite:true}, player2:{name:'test', playingWhite:false}};
-
+	  Game.find({id:id},function(err, game) {
 	  callbackFn(game);
+    		});
 	};
 
 	var getAllGames = function(callbackFn){
-	  var games = [];
-	
-	   callbackFn(games);
+		Game.find({},function(err, games) {
+         	if(err) { console.log(err); }
+         	callbackFn(games);
+         });
 	};
 
 	var createGame = function(gameParam, callbackFn){
-		var gameid = getNewGameId();
+		var gameId = getNewGameId();
 		var game = new Game({id:gameId, player1:{name:'prashanth', playingWhite:true}, player2:{name:'test', playingWhite:false}});
 		game.save();
 	    callbackFn(game);
@@ -29,7 +31,7 @@
 	var chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 	var getNewGameId = function(){
 		var gameId = '';
-		for (var i = 5; i > 0; --i) gameId += chars[Math.round(Math.random() * (chars.length - 1))];    
+		for (var i = 5; i > 0; --i) gameId += chars[Math.round(Math.random() * (chars.length - 1))];   
 		return gameId;
 	};
 
