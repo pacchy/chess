@@ -24,6 +24,20 @@ console.log('Get your ice cream on port ' + port);
 router.use(function(req, res, next) {
     // do logging
     console.log('Something is happening.');
+
+    // Website you wish to allow to connect
+    res.setHeader('Access-Control-Allow-Origin', '*');
+
+    // Request methods you wish to allow
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+
+    // Request headers you wish to allow
+    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+
+    // Set to true if you need the website to include cookies in the requests sent
+    // to the API (e.g. in case you use sessions)
+    res.setHeader('Access-Control-Allow-Credentials', true);
+
     next(); // make sure we go to the next routes and don't stop here
 });
 
@@ -33,7 +47,7 @@ router.route('/games/:gameId')
         gameService.getGameById(req.params.gameId, function(err, game) {
             if (err)
                 res.send(err);
-            res.json(game);
+            res.end(game);
         });
     });
 

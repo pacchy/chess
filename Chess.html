@@ -8,35 +8,15 @@
 <script type="text/javascript" src="js/setupboard.js"></script>
 <script type="text/javascript" src="lib/angular/angular.min.js"></script>
 <script type="text/javascript" src="lib/angular/angular-sanitize.js"></script>
+<script type="text/javascript" src="lib/angular/angular-route.min.js"></script>
 <script type="text/javascript" src="app.js"></script>
 <script type="text/javascript" src="js/gameservice.js"></script>
 <script type="text/javascript" src="js/evaluate.js"></script>
 
 </head>
 <body ng-app="chessApp">
-	<div ng-controller='homeController'>
-	<input type="button" id="playWhite" value="Play White" ng-click="playWhite(1, true)"></input>
-	<input type="button" id="playBlack" value="Play Black" ng-click="playWhite(1, false)"></input>
-	<input type="button" id="newGame" value="New Game" ng-click="newGame()"></input>
-		
-	<table class="board" style="display:none">
-			<tbody>
-				<tr id="{{row.id}}" ng-repeat="row in board.playingRows">
-					<td class='square' id='{{square.id}}' droppable='true' ng-class="{black:square.colour, white:!square.colour, highlight:square.highlight}" ng-mousedown="showValidSquares(square.id)" data-ng-repeat="square in row.squares">
-					<span id='{{square.piece.id}}' ng-class="{selected:square.selected, highlight:square.highlight}" draggable='true' ng-bind-html="square.piece.code | unsafe"></span></td>
-				</tr>
-			</tbody>
-		</table>
-	<div style="font-size:20px">Copyright @Prashanth Rao</div></td>
-	<div >
-
-	<ul>
-		<li id="li1" id="{piece.id}" class='square white' ng-repeat="piece in takenPieces | filter:isWhite" style="display: inline-block;"><span id="{piece.id}" class='selected' draggable='true' ng-bind-html="piece.code | unsafe"></span></li>
-	</ul>
-	<ul>
-		<li id="li1" id="{piece.id}" class='square black' ng-repeat="piece in takenPieces | filter:isBlack" style="display: inline-block;"><span id="{piece.id}" class='selected' draggable='true' ng-bind-html="piece.code | unsafe"></span></li>
-	</ul>
-	</div>
+	<div>
+		<ng-view/>
 	</div>
 </body>
 </html>

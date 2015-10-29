@@ -1,4 +1,4 @@
-var app = angular.module('chessApp', []);
+var app = angular.module('chessApp', ['ngRoute']);
 var game = new Game();
 game.init();	
 var board = new Board();
@@ -6,15 +6,50 @@ game.board = board;
 board.init();
 setupBoard.loadPieces(gameConfig.newGame, board);
 
-var ctrl = app.controller('homeController', ['$scope', '$sce', 'gameService', function($scope, $sce, $gameService){
+app.config(function($httpProvider, $routeProvider) {
+  $httpProvider.defaults.useXDomain = true;
+  delete $httpProvider.defaults.headers.common['X-Requested-With'];
+
+  $routeProvider.
+   when('/games', {
+      templateUrl: 'templates/game.html',
+      controller: 'gamesController'
+    }).
+    when('/games/:gameId', {
+      templateUrl: 'templates/game.html',
+      controller: 'games1Controller'
+    }).
+    when('/', {
+      templateUrl: 'templates/home.html',
+      controller: 'homeController'
+    }).
+    otherwise({
+      redirectTo: '/'
+    });
+});
+
+var gamesCtrl1 = app.controller('games1Controller', ['$scope', '$routeParams',function($scope, $routeParams){
+
+  $scope.message = 'Are you ready to play!' + $routeParams.gameId;
+}]);
+
+var gamesCtrl = app.controller('gamesController', ['$scope',function($scope){
+
+  $scope.message = 'Are you ready to play!';
+}]);
+
+var ctrl = app.controller('homeController', ['$scope', '$sce', '$location','gameService', function($scope, $sce, $location, $gameService){
 
 	$scope.board = board;
   $scope.takenPieces = board.takenPieces;
 
   $scope.newGame = function()
   {
-     //service new game
-     $gameService.newGame();
+     //call service new game
+     $gameService.newGame()
+     .then(function(newGame){
+       $location.path('games/'+newGame.id);
+     });
   };
 
 	$scope.showValidSquares = function(squareId){
