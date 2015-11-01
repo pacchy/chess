@@ -19,7 +19,7 @@
 	<input type="button" id="playBlack" value="Play Black" ng-click="playWhite(1, false)"></input>
 	<input type="button" id="newGame" value="New Game" ng-click="newGame()"></input>
 		
-	<table class="board" style="display:none">
+	<table class="board" style="display:block">
 			<tbody>
 				<tr id="{{row.id}}" ng-repeat="row in board.playingRows">
 					<td class='square' id='{{square.id}}' droppable='true' ng-class="{black:square.colour, white:!square.colour, highlight:square.highlight}" ng-mousedown="showValidSquares(square.id)" data-ng-repeat="square in row.squares">
