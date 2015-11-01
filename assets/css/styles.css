@@ -1,0 +1,12 @@
+.wrapper {
+  perspective: 1000px;
+  margin: 4em auto;
+  width: 500px;
+  transform: rotate(0);
+}
+
+.inner {
+  width:500px;
+  transition: .3s;
+  transform: rotateY(30deg);
+}
