@@ -1,0 +1,2 @@
+xcopy c:\workspace\chess\chess\* "C:\Program Files\Apache Software Foundation\Tomcat 7.0\webapps\chess\" /y
+xcopy c:\workspace\chess\chess\templates\* "C:\Program Files\Apache Software Foundation\Tomcat 7.0\webapps\chess\templates" /y
